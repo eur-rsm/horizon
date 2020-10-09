@@ -36,9 +36,7 @@ class PendingJobsController extends Controller
     public function index(Request $request)
     {
         $jobs = $this->jobs->getPending($request->query('starting_at', -1))->map(function ($job) {
-            $job->payload = json_decode($job->payload);
-
-            return $job;
+            return $this->decode($job);
         })->values();
 
         return [
@@ -55,7 +53,9 @@ class PendingJobsController extends Controller
      */
     protected function decode($job)
     {
-        $job->payload = json_decode($job->payload);
+        $job->payload = tap(json_decode($job->payload), function ($payload) {
+            unset($payload->data);
+        });
 
         return $job;
     }
