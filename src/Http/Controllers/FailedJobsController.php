@@ -68,7 +68,7 @@ class FailedJobsController extends Controller
     protected function paginate(Request $request)
     {
         return $this->jobs->getFailed($request->query('starting_at') ?: -1)->map(function ($job) {
-            return $this->decode($job);
+            return $this->decodeWithoutPayloadData($job);
         });
     }
 
@@ -88,7 +88,7 @@ class FailedJobsController extends Controller
         $startingAt = $request->query('starting_at', 0);
 
         return $this->jobs->getJobs($jobIds, $startingAt)->map(function ($job) {
-            return $this->decode($job);
+            return $this->decodeWithoutPayloadData($job);
         });
     }
 
@@ -119,5 +119,18 @@ class FailedJobsController extends Controller
                     ->sortByDesc('retried_at')->values();
 
         return $job;
+    }
+
+    /**
+     * Decode the given job and remove the payload data.
+     *
+     * @param  object $job
+     * @return object
+     */
+    protected function decodeWithoutPayloadData($job)
+    {
+        return tap($this->decode($job), function ($decoded) {
+            unset($decoded->payload->data);
+        });
     }
 }
