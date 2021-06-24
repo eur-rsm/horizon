@@ -86,6 +86,8 @@
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="icon fill-primary" :class="{spin: retrying}">
                         <path d="M10 3v2a5 5 0 0 0-3.54 8.54l-1.41 1.41A7 7 0 0 1 10 3zm4.95 2.05A7 7 0 0 1 10 17v-2a5 5 0 0 0 3.54-8.54l1.41-1.41zM10 20l-4-4 4-4v8zm0-12V0l4 4-4 4z"/>
                     </svg>
+
+                    Retry Failed Jobs
                 </button>
             </div>
 
@@ -103,10 +105,10 @@
                     <div class="col">
                         {{batch.id}}
 
-                        <small class="badge badge-danger badge-sm" v-if="batch.failedJobs > 0 && batch.progress < 100">
+                        <small class="badge badge-danger badge-sm" v-if="batch.failedJobs > 0 && batch.totalJobs - batch.pendingJobs < batch.totalJobs">
                             Failures
                         </small>
-                        <small class="badge badge-success badge-sm" v-if="batch.progress == 100">
+                        <small class="badge badge-success badge-sm" v-if="batch.totalJobs - batch.pendingJobs == batch.totalJobs">
                             Finished
                         </small>
                         <small class="badge badge-secondary badge-sm" v-if="batch.pendingJobs > 0 && !batch.failedJobs">

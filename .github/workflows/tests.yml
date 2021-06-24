@@ -8,21 +8,22 @@ on:
 
 jobs:
   tests:
+    runs-on: ubuntu-20.04
 
-    runs-on: ubuntu-latest
     services:
       redis:
         image: redis
         ports:
           - 6379:6379
         options: --entrypoint redis-server
+
     strategy:
       fail-fast: true
       matrix:
-        php: [7.3, 7.4]
+        php: [7.3, 7.4, 8.0]
         laravel: [^8.0]
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }}
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
     steps:
       - name: Checkout code
@@ -32,7 +33,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip
+          extensions: dom, curl, libxml, mbstring, redis, zip
           coverage: none
 
       - name: Install dependencies
