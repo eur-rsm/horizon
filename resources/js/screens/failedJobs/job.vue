@@ -178,6 +178,10 @@
                         </router-link>
                     </div>
                 </div>
+                <div class="row mb-2">
+                    <div class="col-md-2"><strong>Pushed At</strong></div>
+                    <div class="col">{{ readableTimestamp(job.payload.pushedAt) }}</div>
+                </div>
                 <div class="row">
                     <div class="col-md-2"><strong>Failed At</strong></div>
                     <div class="col">{{readableTimestamp(job.failed_at)}}</div>
@@ -191,6 +195,16 @@
             </div>
             <div>
                 <stack-trace :trace="job.exception.split('\n')"></stack-trace>
+            </div>
+        </div>
+
+        <div class="card mt-4" v-if="ready">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5>Exception Context</h5>
+            </div>
+
+            <div class="card-body code-bg text-white">
+                <vue-json-pretty :data="prettyPrintJob(job.context)"></vue-json-pretty>
             </div>
         </div>
 
